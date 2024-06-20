@@ -23,7 +23,20 @@ async def search_groups(keywords):
                 search_result = await client(SearchRequest(q=keyword, limit=10))
                 result += search_result.chats
 
-            return [{'id': chat.id, 'title': chat.title} for chat in result]
+            groups = []
+            for chat in result:
+                if hasattr(chat, 'username') and chat.username:
+                    chat_url = f"https://t.me/{chat.username}"
+                else:
+                    chat_url = None  # You can handle non-public groups here if needed
+
+                groups.append({
+                    'id': chat.id,
+                    'title': chat.title,
+                    'url': chat_url
+                })
+
+            return groups
 
         except Exception as e:
             print(f"Error searching for groups: {e}")

@@ -170,19 +170,21 @@
 
                 // Add click event listener to copy text content
                 listItem.addEventListener("click", () => {
-                  copyToClipboard(listItem.textContent);
-                  // alert(`Copied: ${listItem.textContent}`);
-                  Toastify({
-                    text: `Copied to clipboard: ${listItem.textContent}`,
-                    duration: 2000,
-                    gravity: "top",
-                    position: "right",
-                    stopOnFocus: true,
-                    style: {
-                      background: "rgb(200, 246, 121)",
-                      color: "#000",
-                    },
-                  }).showToast();
+                  if (group.url) {
+                    window.open(group.url, "_blank");
+                  } else {
+                    Toastify({
+                      text: `Link not available for: ${group.title}`,
+                      duration: 2000,
+                      gravity: "top",
+                      position: "right",
+                      stopOnFocus: true,
+                      style: {
+                        background: "rgb(255, 0, 0)",
+                        color: "#fff",
+                      },
+                    }).showToast();
+                  }
                 });
 
                 // Append the <li> to the results list
