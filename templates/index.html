@@ -32,7 +32,7 @@
       sizes="16x16"
       href="/static/favicon-16x16.png"
     />
-    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="manifest" href="/static/site.webmanifest" />
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
   </head>
   <body>
@@ -96,6 +96,7 @@
         cursor: pointer;
         transition: background 0.3s;
         z-index: 1000;
+        font-weight: 600;
         &:hover {
           background-color: #7a2bf992;
         }
@@ -129,7 +130,7 @@
         background-color: white;
         border: 1px solid black;
         border-radius: 16px;
-        padding: 10px;
+        /* padding: 0px 15px; */
         cursor: pointer;
         min-width: 450px;
         max-width: 600px;
@@ -246,18 +247,29 @@
           transform: rotate(360deg);
         }
       }
+
+      .group-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        p {
+          margin: 0;
+          padding: 10px 15px;
+        }
+      }
+
+      .members-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
     </style>
 
     <h1>Telegram Tipster Search</h1>
     <form id="searchForm">
       <label for="keywords">Enter keywords (comma-separated):</label><br />
-      <input
-        type="text"
-        id="keywords"
-        name="keywords"
-        required
-        autofocus
-      /><br /><br />
+      <input type="text" id="keywords" name="keywords" required autofocus
+      placeholder="bets, pronos, paris sportif..."" /><br /><br />
       <button type="submit">Find Channels</button>
     </form>
 
@@ -323,7 +335,19 @@
                 // Create a new <li> element with class "list-item"
                 let listItem = document.createElement("li");
                 listItem.classList.add("list-item");
-                listItem.textContent = group.title;
+                listItem.innerHTML = `
+                  <div class="group-wrapper"> 
+                    <p>${group.title}</p>
+                    <div>
+                      <p class="members-wrapper">
+                        <span><strong>${Intl.NumberFormat().format(
+                          group.members
+                        )}</strong></span>
+                        <img src="/static/members-icon.svg">
+                      </p>
+                    </div>
+                  </div>
+                `;
 
                 // Add click event listener to copy text content
                 listItem.addEventListener("click", () => {

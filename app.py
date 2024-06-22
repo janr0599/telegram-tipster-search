@@ -23,6 +23,7 @@ async def search_groups(keywords):
                 search_result = await client(SearchRequest(q=keyword, limit=10))
                 result += search_result.chats
 
+            print(search_result)
             groups = []
             for chat in result:
                 if hasattr(chat, 'username') and chat.username:
@@ -33,7 +34,9 @@ async def search_groups(keywords):
                 groups.append({
                     'id': chat.id,
                     'title': chat.title,
-                    'url': chat_url
+                    'url': chat_url,
+                    'members': chat.participants_count,
+                    # "tzinfo": chat.tzinfo
                 })
 
             return groups
