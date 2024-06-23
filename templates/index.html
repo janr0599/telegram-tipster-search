@@ -68,6 +68,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        gap: 40px;
         text-align: center;
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
         backdrop-filter: blur(5px);
@@ -75,7 +76,7 @@
         /* border: 1px solid rgba(255, 255, 255, 0.3); Light border; */
       }
 
-      input {
+      #keywords {
         background: #2c105a;
         outline: none;
         border: none;
@@ -83,6 +84,7 @@
         padding: 10px 15px;
         border-radius: 10px;
         font-size: medium;
+        margin-top: 10px;
       }
 
       button {
@@ -273,9 +275,11 @@
 
     <h1>Telegram Tipster Search</h1>
     <form id="searchForm">
-      <label for="keywords">Enter keywords (comma-separated):</label><br />
-      <input type="text" id="keywords" name="keywords" required autofocus
-      placeholder="bets, pronos, paris sportif..."" /><br /><br />
+      <div>
+        <label for="keywords">Enter keywords (comma-separated):</label><br />
+        <input type="text" id="keywords" name="keywords" required autofocus
+        placeholder="bets, pronos, paris sportif..."" />
+      </div>
       <button type="submit" id="search-button">Find Channels</button>
     </form>
 

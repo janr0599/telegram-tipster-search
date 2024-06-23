@@ -120,7 +120,7 @@ async def search_groups(keywords):
                     })
                     print(rounded_views)
                     print(channel_stats)
-                    print(datetime_str)
+                    print(date_str)
                 else:
                     groups.append({
                         'id': chat.id,
@@ -150,7 +150,6 @@ def search_groups_handler():
 
         keywords = data['keywords']
         groups = asyncio.run(search_groups(keywords))
-        print(keywords)
         return jsonify({'status': 'success', 'data': groups}), 200
 
     except Exception as e:
