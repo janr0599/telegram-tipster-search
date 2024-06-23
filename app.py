@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, jsonify
 from telethon.sync import TelegramClient
 from telethon.tl.functions.contacts import SearchRequest
-import asyncio
+from telethon.tl.functions.channels import GetFullChannelRequest
 from dotenv import load_dotenv
+import asyncio
 import os
 
 app = Flask(__name__)
@@ -15,6 +16,38 @@ api_id = os.getenv('API_ID')
 api_hash = os.getenv('API_HASH')
 phone_number = os.getenv('PHONE_NUMBER')
 
+async def get_channel_stats(client, channel_username):
+    try:
+        # Get the channel entity
+        channel = await client.get_entity(channel_username)
+        
+        # Get full channel info
+        full_channel = await client(GetFullChannelRequest(channel))
+        
+        # Basic channel info
+        channel_info = {
+            'title': full_channel.chats[0].title,
+            'username': full_channel.chats[0].username,
+            'subscribers': full_channel.full_chat.participants_count,
+            'recent_posts': []
+        }
+        
+        # Fetch recent posts
+        async for message in client.iter_messages(channel, limit=10):
+            channel_info['recent_posts'].append({
+                # 'id': message.id,
+                # 'text': message.message,
+                'views': message.views,
+                # 'forwards': message.forwards,
+                # 'reactions': message.reactions.results if message.reactions else []
+            })
+        
+        return channel_info
+    
+    except Exception as e:
+        print(f"An error occurred while fetching channel stats: {e}")
+        return {}
+
 async def search_groups(keywords):
     async with TelegramClient('session_name', api_id, api_hash) as client:
         try:
@@ -23,21 +56,37 @@ async def search_groups(keywords):
                 search_result = await client(SearchRequest(q=keyword, limit=10))
                 result += search_result.chats
 
-            print(search_result)
             groups = []
             for chat in result:
+                average_views = None  # Initialize average_views
+                
                 if hasattr(chat, 'username') and chat.username:
                     chat_url = f"https://t.me/{chat.username}"
+                    channel_stats = await get_channel_stats(client, chat.username)  # Get channel stats
+
+                    # Ensure channel_stats contains 'recent_posts'
+                    if 'recent_posts' in channel_stats:
+                        views = [post['views'] for post in channel_stats['recent_posts'] if post['views'] is not None]
+                        if views:  # Check if the list is not empty
+                            total_views = sum(views)
+                            average_views = total_views / len(views)
+                        else:
+                            average_views = 0
+                    else:
+                        average_views = 0
                 else:
-                    chat_url = None  # You can handle non-public groups here if needed
+                    chat_url = None
+                    channel_stats = {} 
 
                 groups.append({
                     'id': chat.id,
                     'title': chat.title,
                     'url': chat_url,
                     'members': chat.participants_count,
-                    # "tzinfo": chat.tzinfo
+                    'views': average_views if average_views is not None else 'N/A'  # Handle the case where there are no views
                 })
+
+                print(average_views if average_views is not None else 'N/A')
 
             return groups
 
