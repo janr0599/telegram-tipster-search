@@ -70,6 +70,7 @@ async def search_groups(keywords):
                         if views:  # Check if the list is not empty
                             total_views = sum(views)
                             average_views = total_views / len(views)
+                            rounded_views = round(average_views)
                         else:
                             average_views = 0
                     else:
@@ -83,10 +84,10 @@ async def search_groups(keywords):
                     'title': chat.title,
                     'url': chat_url,
                     'members': chat.participants_count,
-                    'views': average_views if average_views is not None else 'N/A'  # Handle the case where there are no views
+                    'views': rounded_views if rounded_views is not None else 'N/A'  # Handle the case where there are no views
                 })
 
-                print(average_views if average_views is not None else 'N/A')
+                print(rounded_views if rounded_views is not None else 'N/A')
 
             return groups
 
