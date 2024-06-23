@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, jsonify
 from telethon.sync import TelegramClient
 from telethon.tl.functions.contacts import SearchRequest
 from telethon.tl.functions.channels import GetFullChannelRequest
+from langdetect import detect
+import re
 from dotenv import load_dotenv
 import asyncio
 import os
@@ -16,6 +18,12 @@ api_id = os.getenv('API_ID')
 api_hash = os.getenv('API_HASH')
 phone_number = os.getenv('PHONE_NUMBER')
 
+# Function to remove emojis and non-alphabetic characters
+def clean_text(text):
+    # Remove characters that are not Unicode letters or whitespace
+    text = re.sub(r'[^\w\s]', '', text, flags=re.UNICODE)
+    return text
+
 async def get_channel_stats(client, channel_username):
     try:
         # Get the channel entity
@@ -29,19 +37,38 @@ async def get_channel_stats(client, channel_username):
             'title': full_channel.chats[0].title,
             'username': full_channel.chats[0].username,
             'subscribers': full_channel.full_chat.participants_count,
-            'recent_posts': []
+            'recent_posts': [],
+            'languages': []
         }
         
         # Fetch recent posts
         async for message in client.iter_messages(channel, limit=10):
-            channel_info['recent_posts'].append({
-                'id': message.id,
+            post_info = {
                 'text': message.message,
                 'views': message.views,
-                "date": message.date
-                # 'forwards': message.forwards,
-                # 'reactions': message.reactions.results if message.reactions else []
-            })
+                'date': message.date,
+                'language': 'unknown'  # Default language value
+            }
+            
+            # Language detection for each post
+            if message.message:
+                try:
+                    text = message.message
+                    # Clean text (remove emojis and non-alphabetic characters)
+                    cleaned_text = clean_text(text)
+                    # Language detection
+                    if cleaned_text.strip():  # Check if text is not empty after cleaning
+                        language = detect(cleaned_text)
+                    else:
+                        language = 'unknown'
+                except Exception as e:
+                    print(f"Language detection error: {e}")
+                    language = 'unknown'
+                
+                post_info['language'] = language
+                channel_info['languages'].append(language)  # Store the language in the languages list
+            
+            channel_info['recent_posts'].append(post_info)
         
         return channel_info
     
@@ -59,39 +86,44 @@ async def search_groups(keywords):
 
             groups = []
             for chat in result:
-                average_views = None  # Initialize average_views
-                
                 if hasattr(chat, 'username') and chat.username:
                     chat_url = f"https://t.me/{chat.username}"
                     channel_stats = await get_channel_stats(client, chat.username)  # Get channel stats
 
-                    # Ensure channel_stats contains 'recent_posts'
+                    # Calculate average views
                     if 'recent_posts' in channel_stats:
                         views = [post['views'] for post in channel_stats['recent_posts'] if post['views'] is not None]
-                        if views:  # Check if the list is not empty
+                        if views:
                             total_views = sum(views)
                             average_views = total_views / len(views)
                             rounded_views = round(average_views)
                         else:
-                            average_views = 0
+                            rounded_views = 'N/A'
                     else:
-                        average_views = 0
+                        rounded_views = 'N/A'
+
+                    groups.append({
+                        'id': chat.id,
+                        'title': chat.title,
+                        'url': chat_url,
+                        'members': chat.participants_count,
+                        'views': rounded_views,
+                        'last_message_date': channel_stats['recent_posts'][0]['date'] if 'recent_posts' in channel_stats and channel_stats['recent_posts'] else 'N/A',
+                        'languages': channel_stats.get('languages', [])
+                    })
+                    print(rounded_views)
+                    print(channel_stats)
+                    print(channel_stats['recent_posts'][0]['date'] if 'recent_posts' in channel_stats and channel_stats['recent_posts'] else 'N/A')
                 else:
-                    chat_url = None
-                    channel_stats = {} 
-
-                groups.append({
-                    'id': chat.id,
-                    'title': chat.title,
-                    'url': chat_url,
-                    'members': chat.participants_count,
-                    'views': rounded_views if rounded_views is not None else 'N/A',
-                    'last_message_date': channel_stats['recent_posts'][0]['date'] if 'recent_posts' in channel_stats and channel_stats['recent_posts'] else 'N/A'  # Handle the case where there are no views
-                })
-
-                print(rounded_views if rounded_views is not None else 'N/A')
-                print(channel_stats)
-
+                    groups.append({
+                        'id': chat.id,
+                        'title': chat.title,
+                        'url': None,
+                        'members': chat.participants_count,
+                        'views': 'N/A',
+                        'last_message_date': 'N/A',
+                        'languages': []
+                    })
             return groups
 
         except Exception as e:
