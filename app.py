@@ -35,9 +35,10 @@ async def get_channel_stats(client, channel_username):
         # Fetch recent posts
         async for message in client.iter_messages(channel, limit=10):
             channel_info['recent_posts'].append({
-                # 'id': message.id,
-                # 'text': message.message,
+                'id': message.id,
+                'text': message.message,
                 'views': message.views,
+                "date": message.date
                 # 'forwards': message.forwards,
                 # 'reactions': message.reactions.results if message.reactions else []
             })
@@ -84,10 +85,12 @@ async def search_groups(keywords):
                     'title': chat.title,
                     'url': chat_url,
                     'members': chat.participants_count,
-                    'views': rounded_views if rounded_views is not None else 'N/A'  # Handle the case where there are no views
+                    'views': rounded_views if rounded_views is not None else 'N/A',
+                    'last_message_date': channel_stats['recent_posts'][0]['date'] if 'recent_posts' in channel_stats and channel_stats['recent_posts'] else 'N/A'  # Handle the case where there are no views
                 })
 
                 print(rounded_views if rounded_views is not None else 'N/A')
+                print(channel_stats)
 
             return groups
 
