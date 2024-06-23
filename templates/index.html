@@ -102,6 +102,12 @@
         }
       }
 
+      button:disabled {
+        background-color: #7a2bf934;
+        cursor: not-allowed;
+        color: #ffffff5c;
+      }
+
       section {
         margin-top: 20px;
         display: flex;
@@ -270,7 +276,7 @@
       <label for="keywords">Enter keywords (comma-separated):</label><br />
       <input type="text" id="keywords" name="keywords" required autofocus
       placeholder="bets, pronos, paris sportif..."" /><br /><br />
-      <button type="submit">Find Channels</button>
+      <button type="submit" id="search-button">Find Channels</button>
     </form>
 
     <div class="spinner-container">
@@ -303,12 +309,26 @@
 
           // Check if the current keywords are the same as the last ones
           if (keywords.join(",") === lastKeywords) {
-            console.log("Keywords have not changed. Skipping request.");
+            Toastify({
+              text: "Keywords have not changed",
+              duration: 3000,
+              gravity: "top",
+              position: "right",
+              stopOnFocus: true,
+              style: {
+                background: "rgb(255, 0, 0)",
+                color: "#fff",
+              },
+            }).showToast();
             return;
           }
 
           // Store the current keywords as the last keywords
           lastKeywords = keywords.join(",");
+
+          // Disable the submit button
+          const searchButton = document.getElementById("search-button");
+          searchButton.disabled = true;
 
           try {
             let results = document.getElementById("results");
@@ -356,7 +376,7 @@
                   } else {
                     Toastify({
                       text: `Link not available for: ${group.title}`,
-                      duration: 2000,
+                      duration: 3000,
                       gravity: "top",
                       position: "right",
                       stopOnFocus: true,
@@ -380,6 +400,8 @@
           } finally {
             // Hide spinner
             document.getElementById("spinner").style.display = "none";
+            //Enable the submit button
+            searchButton.disabled = false;
           }
         });
     </script>

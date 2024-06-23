@@ -101,6 +101,13 @@ async def search_groups(keywords):
                             rounded_views = 'N/A'
                     else:
                         rounded_views = 'N/A'
+                    
+                    datetime = channel_stats['recent_posts'][0]['date'] if 'recent_posts' in channel_stats and channel_stats['recent_posts'] else 'N/A'
+
+                    datetime_str = str(datetime)
+
+                    datetime_obj = datetime.fromisoformat(datetime_str)
+                    date_str = datetime_obj.date().isoformat()
 
                     groups.append({
                         'id': chat.id,
@@ -108,12 +115,12 @@ async def search_groups(keywords):
                         'url': chat_url,
                         'members': chat.participants_count,
                         'views': rounded_views,
-                        'last_message_date': channel_stats['recent_posts'][0]['date'] if 'recent_posts' in channel_stats and channel_stats['recent_posts'] else 'N/A',
+                        'last_message_date': date_str,
                         'languages': channel_stats.get('languages', [])
                     })
                     print(rounded_views)
                     print(channel_stats)
-                    print(channel_stats['recent_posts'][0]['date'] if 'recent_posts' in channel_stats and channel_stats['recent_posts'] else 'N/A')
+                    print(datetime_str)
                 else:
                     groups.append({
                         'id': chat.id,
@@ -143,6 +150,7 @@ def search_groups_handler():
 
         keywords = data['keywords']
         groups = asyncio.run(search_groups(keywords))
+        print(keywords)
         return jsonify({'status': 'success', 'data': groups}), 200
 
     except Exception as e:
