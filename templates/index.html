@@ -34,253 +34,54 @@
     />
     <link rel="manifest" href="/static/site.webmanifest" />
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+    <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
-    <style>
-      body {
-        background-image: url("../static/sports-background.svg");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-attachment: fixed; /* This line ensures the background stays in place */
-        margin: 0;
-        padding: 0;
-        font-family: Roboto;
-      }
-
-      h1 {
-        font-size: 60px;
-        text-align: center;
-        color: white;
-      }
-
-      label {
-        color: white;
-      }
-
-      form {
-        width: 500px;
-        height: 150px;
-        margin: auto;
-        background-color: #461594;
-        border-radius: 10px;
-        padding: 10px 0px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 40px;
-        text-align: center;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(10px); /* For Safari */
-        /* border: 1px solid rgba(255, 255, 255, 0.3); Light border; */
-      }
-
-      #keywords {
-        background: #2c105a;
-        outline: none;
-        border: none;
-        color: white;
-        padding: 10px 15px;
-        border-radius: 10px;
-        font-size: medium;
-        margin-top: 10px;
-      }
-
-      button {
-        margin-top: -20px;
-        padding: 10px 20px;
-        background-color: #7a2bf9;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: background 0.3s;
-        z-index: 1000;
-        font-weight: 600;
-        &:hover {
-          background-color: #7a2bf992;
-        }
-      }
-
-      button:disabled {
-        background-color: #7a2bf934;
-        cursor: not-allowed;
-        color: #ffffff5c;
-      }
-
-      section {
-        margin-top: 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-      }
-
-      h2 {
-        display: none;
-      }
-
-      .show {
-        display: block;
-      }
-
-      #results {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 10px;
-        text-align: left;
-      }
-
-      li {
-        background-color: white;
-        border: 1px solid black;
-        border-radius: 16px;
-        /* padding: 0px 15px; */
-        cursor: pointer;
-        min-width: 450px;
-        max-width: 600px;
-        margin-left: -20px;
-        &:hover {
-          background: rgb(200, 246, 121);
-        }
-      }
-
-      li::marker {
-        color: white;
-      }
-
-      .spinner-container {
-        display: none; /* Hide by default */
-        position: fixed; /* Position it fixed to cover the entire screen */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: -10;
-        color: rgb(200, 246, 121);
-      }
-
-      .lds-roller,
-      .lds-roller div,
-      .lds-roller div:after {
-        box-sizing: border-box;
-      }
-      .lds-roller {
-        display: none;
-        position: relative;
-        size: 80px;
-        margin-left: -70px;
-      }
-      .lds-roller div {
-        animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        transform-origin: 40px 40px;
-      }
-      .lds-roller div:after {
-        content: " ";
-        display: block;
-        position: absolute;
-        width: 7.2px;
-        height: 7.2px;
-        border-radius: 50%;
-        background: currentColor;
-        margin: -3.6px 0 0 -3.6px;
-      }
-      .lds-roller div:nth-child(1) {
-        animation-delay: -0.036s;
-      }
-      .lds-roller div:nth-child(1):after {
-        top: 62.62742px;
-        left: 62.62742px;
-      }
-      .lds-roller div:nth-child(2) {
-        animation-delay: -0.072s;
-      }
-      .lds-roller div:nth-child(2):after {
-        top: 67.71281px;
-        left: 56px;
-      }
-      .lds-roller div:nth-child(3) {
-        animation-delay: -0.108s;
-      }
-      .lds-roller div:nth-child(3):after {
-        top: 70.90963px;
-        left: 48.28221px;
-      }
-      .lds-roller div:nth-child(4) {
-        animation-delay: -0.144s;
-      }
-      .lds-roller div:nth-child(4):after {
-        top: 72px;
-        left: 40px;
-      }
-      .lds-roller div:nth-child(5) {
-        animation-delay: -0.18s;
-      }
-      .lds-roller div:nth-child(5):after {
-        top: 70.90963px;
-        left: 31.71779px;
-      }
-      .lds-roller div:nth-child(6) {
-        animation-delay: -0.216s;
-      }
-      .lds-roller div:nth-child(6):after {
-        top: 67.71281px;
-        left: 24px;
-      }
-      .lds-roller div:nth-child(7) {
-        animation-delay: -0.252s;
-      }
-      .lds-roller div:nth-child(7):after {
-        top: 62.62742px;
-        left: 17.37258px;
-      }
-      .lds-roller div:nth-child(8) {
-        animation-delay: -0.288s;
-      }
-      .lds-roller div:nth-child(8):after {
-        top: 56px;
-        left: 12.28719px;
-      }
-      @keyframes lds-roller {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
-      .group-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        p {
-          margin: 0;
-          padding: 10px 15px;
-        }
-      }
-
-      .members-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-    </style>
-
     <h1>Telegram Tipster Search</h1>
+
     <form id="searchForm">
-      <div>
-        <label for="keywords">Enter keywords (comma-separated):</label><br />
-        <input type="text" id="keywords" name="keywords" required autofocus
-        placeholder="bets, pronos, paris sportif..."" />
+      <div class="form-row-1">
+        <div class="">
+          <label for="keywords">Keywords</label><br />
+          <input
+            type="text"
+            id="keywords"
+            name="keywords"
+            required
+            autofocus
+            placeholder="Enter keywords (comma-separated)"
+          />
+        </div>
+        <div class="">
+          <label for="date">Last activity date</label><br />
+          <input type="date" id="date" name="date" />
+        </div>
+        <div class="">
+          <label for="members">Minimum members</label><br />
+          <input type="number" id="members" name="members" />
+        </div>
       </div>
-      <button type="submit" id="search-button">Find Channels</button>
+
+      <div class="form-row-2">
+        <div class="">
+          <label for="views">Average views</label><br />
+          <input type="number" id="views" name="views" />
+        </div>
+        <div class="">
+          <label for="language">Language</label><br />
+          <select name="language" id="language">
+            <option value=""></option>
+            <option value="fr">French</option>
+            <option value="it">Italian</option>
+            <option value="ge">German</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row-3">
+        <button type="submit" id="search-button">Find Channels</button>
+      </div>
     </form>
 
     <div class="spinner-container">
@@ -300,118 +101,10 @@
       <ol id="results" start="1"></ol>
     </section>
 
-    <script>
-      let lastKeywords = ""; // Initialize lastKeywords at the top
-
-      document
-        .getElementById("searchForm")
-        .addEventListener("submit", async function (event) {
-          event.preventDefault();
-
-          let keywords = document.getElementById("keywords").value;
-          keywords = keywords.split(",").map((keyword) => keyword.trim());
-
-          // Check if the current keywords are the same as the last ones
-          if (keywords.join(",") === lastKeywords) {
-            Toastify({
-              text: "Keywords have not changed",
-              duration: 3000,
-              gravity: "top",
-              position: "right",
-              stopOnFocus: true,
-              style: {
-                background: "rgb(255, 0, 0)",
-                color: "#fff",
-              },
-            }).showToast();
-            return;
-          }
-
-          // Store the current keywords as the last keywords
-          lastKeywords = keywords.join(",");
-
-          // Disable the submit button
-          const searchButton = document.getElementById("search-button");
-          searchButton.disabled = true;
-
-          try {
-            let results = document.getElementById("results");
-            results.innerHTML = ""; // Clear previous results
-
-            // Show spinner
-            document.getElementById("spinner").style.display = "inline-block";
-
-            let response = await fetch("/search_groups", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ keywords: keywords }),
-            });
-
-            if (!response.ok) {
-              throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            let data = await response.json();
-            if (data.status === "success") {
-              data.data.forEach((group) => {
-                // Create a new <li> element with class "list-item"
-                let listItem = document.createElement("li");
-                listItem.classList.add("list-item");
-                listItem.innerHTML = `
-                  <div class="group-wrapper"> 
-                    <p>${group.title}</p>
-                    <div>
-                      <p class="members-wrapper">
-                        <span><strong>${Intl.NumberFormat().format(
-                          group.members
-                        )}</strong></span>
-                        <img src="/static/members-icon.svg">
-                      </p>
-                    </div>
-                  </div>
-                `;
-
-                // Add click event listener to copy text content
-                listItem.addEventListener("click", () => {
-                  if (group.url) {
-                    window.open(group.url, "_blank");
-                  } else {
-                    Toastify({
-                      text: `Link not available for: ${group.title}`,
-                      duration: 3000,
-                      gravity: "top",
-                      position: "right",
-                      stopOnFocus: true,
-                      style: {
-                        background: "rgb(255, 0, 0)",
-                        color: "#fff",
-                      },
-                    }).showToast();
-                  }
-                });
-
-                // Append the <li> to the results list
-                results.appendChild(listItem);
-              });
-            } else {
-              throw new Error(data.message);
-            }
-          } catch (error) {
-            console.error("Error:", error);
-            alert("An error occurred while searching for groups.");
-          } finally {
-            // Hide spinner
-            document.getElementById("spinner").style.display = "none";
-            //Enable the submit button
-            searchButton.disabled = false;
-          }
-        });
-    </script>
     <script
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/toastify-js"
     ></script>
+    <script src="/static/scripts.js"></script>
   </body>
 </html>

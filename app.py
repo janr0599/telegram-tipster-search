@@ -3,10 +3,12 @@ from telethon.sync import TelegramClient
 from telethon.tl.functions.contacts import SearchRequest
 from telethon.tl.functions.channels import GetFullChannelRequest
 from langdetect import detect
+from datetime import datetime as dt
 import re
 from dotenv import load_dotenv
 import asyncio
 import os
+from telethon.errors import FloodWaitError
 
 app = Flask(__name__)
 
@@ -72,6 +74,10 @@ async def get_channel_stats(client, channel_username):
         
         return channel_info
     
+    except FloodWaitError as e:
+        print(f"Rate limit hit: Waiting for {e.seconds} seconds.")
+        await asyncio.sleep(e.seconds)
+        return await get_channel_stats(client, channel_username)
     except Exception as e:
         print(f"An error occurred while fetching channel stats: {e}")
         return {}
@@ -104,10 +110,12 @@ async def search_groups(keywords):
                     
                     datetime = channel_stats['recent_posts'][0]['date'] if 'recent_posts' in channel_stats and channel_stats['recent_posts'] else 'N/A'
 
-                    datetime_str = str(datetime)
-
-                    datetime_obj = datetime.fromisoformat(datetime_str)
-                    date_str = datetime_obj.date().isoformat()
+                    if datetime != 'N/A':
+                        datetime_str = str(datetime)
+                        datetime_obj = dt.fromisoformat(datetime_str)
+                        date_str = datetime_obj.date().isoformat()
+                    else:
+                        date_str = 'N/A'
 
                     groups.append({
                         'id': chat.id,
