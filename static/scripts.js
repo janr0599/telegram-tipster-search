@@ -19,6 +19,7 @@ document
         style: {
           background: "rgb(255, 0, 0)",
           color: "#fff",
+          borderRadius: "10px",
         },
       }).showToast();
       return;
@@ -76,7 +77,7 @@ document
               window.open(group.url, "_blank");
             } else {
               Toastify({
-                text: `Link not available for: ${group.title}`,
+                text: "Link not available",
                 duration: 3000,
                 gravity: "top",
                 position: "right",
@@ -84,6 +85,7 @@ document
                 style: {
                   background: "rgb(255, 0, 0)",
                   color: "#fff",
+                  borderRadius: "10px",
                 },
               }).showToast();
             }
