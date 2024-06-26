@@ -76,11 +76,12 @@ async def get_channel_stats(client, channel_username):
     
     except FloodWaitError as e:
         print(f"Rate limit hit: Waiting for {e.seconds} seconds.")
-        await asyncio.sleep(e.seconds)
-        return await get_channel_stats(client, channel_username)
+        return {'error': 'rate_limit', 'wait_time': e.seconds}
+        # await asyncio.sleep(e.seconds)
+        # return await get_channel_stats(client, channel_username)
     except Exception as e:
         print(f"An error occurred while fetching channel stats: {e}")
-        return {}
+        return {'error': 'fetch_error', 'message': str(e)}
 
 async def search_groups(keywords):
     async with TelegramClient('session_name', api_id, api_hash) as client:
@@ -95,6 +96,10 @@ async def search_groups(keywords):
                 if hasattr(chat, 'username') and chat.username:
                     chat_url = f"https://t.me/{chat.username}"
                     channel_stats = await get_channel_stats(client, chat.username)  # Get channel stats
+
+                    if 'error' in channel_stats and channel_stats['error'] == 'rate_limit':
+                        # Return rate limit error immediately
+                        return channel_stats
 
                     # Calculate average views
                     if 'recent_posts' in channel_stats:
@@ -129,6 +134,7 @@ async def search_groups(keywords):
                     print(rounded_views)
                     print(channel_stats)
                     print(date_str)
+                    print(chat.participants_count)
                 else:
                     groups.append({
                         'id': chat.id,
@@ -152,13 +158,34 @@ def index():
 @app.route('/search_groups', methods=['POST'])
 def search_groups_handler():
     try:
-        data = request.get_json()
+        data = request.json
+        keywords = data.get('keywords', [])
+        date = data.get('date', None)
+        members = data.get('members', None)
+        views = data.get('views', None)
+        language = data.get('language', None)
         if not data or 'keywords' not in data:
             return jsonify({'error': 'Keywords not provided in JSON format'}), 400
 
-        keywords = data['keywords']
         groups = asyncio.run(search_groups(keywords))
-        return jsonify({'status': 'success', 'data': groups}), 200
+
+        if 'error' in groups:
+            return jsonify(groups), 200
+
+        filtered_groups = []
+        for group in groups:
+            if any(keyword.lower() in group['title'].lower() for keyword in keywords):
+
+                group_views = group['views'] if group['views'] != 'N/A' else float('inf')
+
+                if (date and group['last_message_date'] < date) or \
+                (members and group['members'] < int(members)) or \
+                (views and group_views < int(views)) or \
+                (language and language not in group['languages']):
+                 continue
+                filtered_groups.append(group)
+
+        return jsonify({'status': 'success', 'data': filtered_groups}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
