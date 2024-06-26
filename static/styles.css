@@ -81,6 +81,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1); /* Invert the icon color */
 }
 
+.keywords-div {
+  display: flex;
+  flex-direction: column;
+}
+
 button {
   padding: 10px 20px;
   background-color: #7a2bf9;
@@ -125,6 +130,12 @@ h2 {
   justify-content: center;
   gap: 10px;
   text-align: left;
+}
+
+.no-results {
+  font-size: 25px;
+  font-weight: bold;
+  color: white;
 }
 
 li {

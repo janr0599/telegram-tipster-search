@@ -85,6 +85,7 @@ document
           // No results found
           let noResults = document.createElement("p");
           noResults.textContent = "No results found";
+          noResults.classList.add("no-results");
           results.appendChild(noResults);
         } else {
           data.data.forEach((group) => {
