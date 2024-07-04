@@ -88,6 +88,13 @@ document
           noResults.classList.add("no-results");
           results.appendChild(noResults);
         } else {
+          //select results-count div from the dom and append the results count p element
+          let resultsCount = document.getElementById("results-count");
+          let resultsNumber = document.createElement("p");
+          resultsNumber.classList.add("results-number");
+          resultsNumber.textContent = `Results: ${data.data.length}`;
+          resultsCount.appendChild(resultsNumber);
+
           data.data.forEach((group) => {
             // Create a new <li> element with class "list-item"
             let listItem = document.createElement("li");

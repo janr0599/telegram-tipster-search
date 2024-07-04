@@ -77,8 +77,7 @@ async def get_channel_stats(client, channel_username):
     except FloodWaitError as e:
         print(f"Rate limit hit: Waiting for {e.seconds} seconds.")
         return {'error': 'rate_limit', 'wait_time': e.seconds}
-        # await asyncio.sleep(e.seconds)
-        # return await get_channel_stats(client, channel_username)
+    
     except Exception as e:
         print(f"An error occurred while fetching channel stats: {e}")
         return {'error': 'fetch_error', 'message': str(e)}

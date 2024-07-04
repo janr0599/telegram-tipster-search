@@ -42,29 +42,39 @@
     <form id="searchForm">
       <div class="form-row-1">
         <div class="keywords-div">
-          <label for="keywords">Keywords</label>
-          <input
-            type="text"
-            id="keywords"
-            name="keywords"
-            required
-            autofocus
-            placeholder="tipster, pronostiqueur.."
-          />
+          <label for="keywords"
+            >Keywords
+            <span class="tooltip">
+              <span class="tooltip-icon">i</span>
+              <span class="tooltiptext"
+                >comma-separated e.g: <br />
+                tipster, pronostiqueur, scommessa...</span
+              >
+            </span>
+          </label>
+          <input type="text" id="keywords" name="keywords" required autofocus />
         </div>
         <div class="">
-          <label for="date">Last activity date</label><br />
+          <label for="date"
+            >Last activity date
+            <span class="tooltip">
+              <span class="tooltip-icon">i</span>
+              <span class="tooltiptext"
+                >minimum date for the last activity of the tipster.</span
+              >
+            </span> </label
+          ><br />
           <input type="date" id="date" name="date" />
         </div>
         <div class="">
-          <label for="members">Minimum members</label><br />
+          <label for="members">Minimum members </label><br />
           <input type="number" id="members" name="members" />
         </div>
       </div>
 
       <div class="form-row-2">
         <div class="">
-          <label for="views">Average views</label><br />
+          <label for="views">Average views </label><br />
           <input type="number" id="views" name="views" />
         </div>
         <div class="">
@@ -77,6 +87,9 @@
             <option value="en">English</option>
             <option value="es">Spanish</option>
           </select>
+        </div>
+        <div class="reset-button-container">
+          <button type="reset" class="reset-button">Reset</button>
         </div>
       </div>
 
@@ -99,6 +112,7 @@
     </div>
 
     <section>
+      <div id="results-count"></div>
       <ol id="results" start="1"></ol>
     </section>
 

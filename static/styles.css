@@ -86,6 +86,46 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   flex-direction: column;
 }
 
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  font-size: 10px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Position the tooltip above the text */
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip-icon {
+  background-color: #555;
+  color: #fff;
+  border-radius: 50%;
+  display: inline-block;
+  padding: 2px 6px;
+  margin-left: 5px;
+  font-size: 12px;
+  line-height: 1;
+}
+
 button {
   padding: 10px 20px;
   background-color: #7a2bf9;
@@ -108,12 +148,28 @@ button:disabled {
   color: #ffffff5c;
 }
 
+.reset-button-container {
+  margin-left: 90px;
+  margin-top: 40px;
+}
+
+.reset-button {
+  background-color: #7a2bf992;
+  &:hover {
+    background-color: #7a2bf946;
+  }
+}
+
 section {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.results-number {
+  color: white;
 }
 
 h2 {
