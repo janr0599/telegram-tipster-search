@@ -47,13 +47,17 @@ document
     lastViews = views;
     lastLanguage = language;
 
-    // Disable the submit button
+    // Disable the submit button and reset buttons
     const searchButton = document.getElementById("search-button");
     searchButton.disabled = true;
+
+    const resetButton = document.getElementById("reset-button");
+    resetButton.disabled = true;
 
     try {
       let results = document.getElementById("results");
       results.innerHTML = ""; // Clear previous results
+      document.getElementById("results-count").innerHTML = ""; // Clear previous results count
 
       // Show spinner
       document.getElementById("spinner").style.display = "inline-block";
@@ -172,7 +176,8 @@ document
     } finally {
       // Hide spinner
       document.getElementById("spinner").style.display = "none";
-      // Enable the submit button
+      // Enable the submit and reset buttons
       searchButton.disabled = false;
+      resetButton.disabled = false;
     }
   });
