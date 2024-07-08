@@ -126,6 +126,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   line-height: 1;
 }
 
+#language {
+  width: 180px;
+}
+
 button {
   padding: 10px 20px;
   background-color: #7a2bf9;
@@ -155,6 +159,7 @@ button:disabled {
 
 .reset-button {
   background-color: #7a2bf992;
+  margin-left: -30px;
   &:hover {
     background-color: #7a2bf946;
   }
