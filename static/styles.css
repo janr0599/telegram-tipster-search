@@ -57,7 +57,6 @@ form {
 .form-row-3 {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   gap: 20px;
   width: 100%;
 }
@@ -159,10 +158,15 @@ button:disabled {
 
 .reset-button {
   background-color: #7a2bf992;
-  margin-left: -30px;
+  margin-left: -58px;
+  margin-top: -5px;
   &:hover {
     background-color: #7a2bf946;
   }
+}
+
+#search-button {
+  margin-left: 402px;
 }
 
 section {
